@@ -19,7 +19,7 @@ char keypress() {
 
 
 void editFile(string filename, string text) {
-    ofstream file(filename);
+    ofstream file(filename);  
     bool saved = true;
     // use data structure here 
     string save;
