@@ -1,16 +1,39 @@
 // test.cpp
 
-
 #include <iostream>
-#include "src/terminal.cpp"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <fstream>
+
+#include "src/terminal.h"
+#include "src/keys.h"
+#include "src/file.h"
+
+using namespace std;
 
 int main() {
     enableRawMode();
+    initScreen();
 
-    char c;
-    while (read(STDIN_FILENO, &c, 1) == 1 && c != 'q') {
-        std::cout << "char: " << c << "  ASCII: " << (int)c << std::endl; 
+
+    while(1) {
+      refreshScreen();
+      processKey();
     }
 
-    return 1;
+
+    // //opens an empty text file, you can edit and save the file
+    // if (argc > 1) {
+    //     // reads from a file and turn on edit and save feature
+    //     readAndEditfile(argv[1]);
+    // } else {
+    //     string fileName;
+    //     std::cout << "Enter a name for the file: ";
+    //     std::cin >> fileName;
+    //     editfileOnCreate(fileName);
+    // }
+
+
+    return 0;
 }
