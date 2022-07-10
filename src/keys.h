@@ -35,9 +35,10 @@ int readKey() {
         }
         //std::cout << c << " " << (int)c << "\r\n";
     }
+    
     if (c == '\x1b') {
         char seq[3];
-
+        
         // <- = \x1b[D     \x1b = ^[
         if (read(STDIN_FILENO, &seq[0], 1) != 1 || 
             read(STDIN_FILENO, &seq[1], 1) != 1) {
