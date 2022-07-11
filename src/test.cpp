@@ -19,7 +19,6 @@ int main() {
         position++;
     }
 
-   
 
     return 0;
 }

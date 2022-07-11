@@ -6,30 +6,33 @@
 
 class GapBuffer{
 private:
-    char buffer[50];
-    int gap_size;
+    char *buffer;
     int gap_left;
     int gap_right;
-    int size;
+    int gap_size;
+    int size; 
     int length;
+
 
 public:
     // Constructor
     GapBuffer() {
         std::cout << "Gap buffer" << std::endl; 
-        for(int i = 0; i < 10; i++) {
+        size = 5;
+        gap_size = 5;
+        buffer = new char[size];
+
+        for(int i = 0; i < size; i++) {
             buffer[i] = '_';
         }
-        gap_size = 10;
         gap_left = 0;
         gap_right = gap_size - gap_left - 1;
-        size = 10;
         length = 0;
     }
 
     // test function
     void display() {
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < size; i++) {
             std::cout << buffer[i] << " ";
         }
         std::cout << std::endl;
@@ -37,26 +40,45 @@ public:
 
     //resize gap when its empty
     void growGap(int k, int position) {
-        char a[size];
+        char * copy_buffer = new char[size + k];
 
-        // copy characters of buffer to a[]
-        for(int i = position; i < size; i++) {
-            a[i - position] = buffer[i];
+        // copy characters of buffer to copy_buffer[]
+        for(int i = 0; i < position; i++) {
+            copy_buffer[i] = buffer[i];
+        }
+
+        std::cout << "copy_buffer values: " << std::endl;
+        for(int i = 0; i < size; i++) {
+            std::cout << copy_buffer[i] << std::endl;
         }
 
         // Insert a gap of K from index position
         // gap is '_'
         for(int i = 0; i < k; i++) {
-            buffer[i + position] = '_';
+            copy_buffer[i + position] = '_';
         }
 
-        // Reinsert the remaining array
-        for(int i = 0; i < position + k; i++) {
-            buffer[position + k + i] = a[i];
+        // only re insert in the case where there is something left to re insert
+        if (position <  gap_right) {
+            for(int i = 0; i < position + k; i++) {
+                copy_buffer[position + k + i] = buffer[i];
+            }
         }
+        
 
+        buffer = copy_buffer;
+        delete[] copy_buffer;
+        copy_buffer = NULL;
+        
         size += k;
         gap_right += k;
+
+        std::cout << "buffer values: " << std::endl;
+        for(int i = 0; i < size; i++) {
+            std::cout << buffer[i] << std::endl;
+        }
+        
+       
         
     }
 
@@ -96,11 +118,13 @@ public:
         }
     }
     
+    
 
     // insert char in the buffer at position
     void insert(char input, int position) {
-    
+        std::cout << "position: " << position << std::endl;
         if (position != gap_left) {
+            std::cout << "postition != gap_left" << std::endl;
             move_cursor(position);
         }
     
@@ -108,7 +132,8 @@ public:
     
             // If the gap is empty grow the size
             if (gap_right == gap_left) {
-                int k = 10;
+                std::cout << "grow gap " << std::endl;
+                int k = gap_size;
                 growGap(k, position);
             }
     
@@ -116,7 +141,6 @@ public:
             // move the gap
             buffer[gap_left] = input;
             gap_left++;
-        
 
         length++;
     }
