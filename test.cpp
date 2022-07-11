@@ -16,7 +16,6 @@ int main() {
     enableRawMode();
     initScreen();
 
-
     while(1) {
       refreshScreen();
       processKey();

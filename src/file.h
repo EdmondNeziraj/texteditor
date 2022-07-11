@@ -71,7 +71,7 @@ void readAndEditfile(string filename) {
   editFile(filename, text);
 }
 
-int main(int argc, char *argv[]) {
+int mains(int argc, char *argv[]) {
     // opens an empty text file, you can edit and save the file
     if (argc > 1) {
         // reads from a file and turn on edit and save feature
@@ -82,4 +82,5 @@ int main(int argc, char *argv[]) {
         std::cin >> fileName;
         editfileOnCreate(fileName);
     }
+    return 0;
 }
