@@ -21,7 +21,7 @@ GapBuffer::GapBuffer() {
     gap_buffer_ = new char[buffer_size_];
 
     for(int i = 0; i < buffer_size_; i++) {
-        gap_buffer_[i] = '_';
+        gap_buffer_[i] = ' ';
     }
     gap_left_ = 0;
     gap_right_ = gap_size_ - gap_left_ - 1;
@@ -159,7 +159,7 @@ void GapBuffer::growGap(int position) {
     }
 
     for (int i = position; i < position + 5; i++) {
-        gap_buffer_[i] = '_';
+        gap_buffer_[i] = ' ';
     }
 
     for (int i = position; i < buffer_size_; i++) {
@@ -181,7 +181,7 @@ void GapBuffer::left(int position) {
         gap_left_--;
         gap_right_--;
         gap_buffer_[gap_right_ + 1] = gap_buffer_[gap_left_];
-        gap_buffer_[gap_left_] = '_';
+        gap_buffer_[gap_left_] = ' ';
     }
 }
 
@@ -192,7 +192,7 @@ void GapBuffer::right(int position) {
         gap_left_++;
         gap_right_++;
         gap_buffer_[gap_left_ - 1] = gap_buffer_[gap_right_];
-        gap_buffer_[gap_right_] = '_';
+        gap_buffer_[gap_right_] = ' ';
     }
 }
 
@@ -252,7 +252,7 @@ void GapBuffer::deleteChar(int position){
 
     // reduce the gap by 1 position to the left
     gap_left_ -= 1;
-    gap_buffer_[gap_left_] = '_';
+    gap_buffer_[gap_left_] = ' ';
     gap_size_++;
     text_length_--;
 }

@@ -453,7 +453,7 @@ void Editor::SaveFile() {
     if (filename_ == NULL) {
         filename_ = Prompt((char*)"Filename to save as: %s (ESC to cancel)");
     if (filename_ == NULL) {
-      SetStatusMessage("Save aborted");
+      SetStatusMessage("Save cancelled!");
       return;
     }
     SelectSyntaxHighlight();
@@ -483,12 +483,10 @@ void Editor::SaveFile() {
 void Editor::Copy() {
 
     // saving the character from start position to end position in a seperate array
-    int size = 5;
+    int size = rows_[cursor_y_].GetBufferSize();
     copied_text_ = new char[size];
-    int index = 0;
-    for (int i = cursor_x_; i < cursor_x_+size; i++) {
-        copied_text_[index] = rows_[cursor_y_].GetBuffer()[i];
-        index++;
+    for (int i = 0; i < size; i++) {
+        copied_text_[i] = rows_[cursor_y_].GetBuffer()[i];
     }
     copied_text_size_ = size;
 }
@@ -496,18 +494,15 @@ void Editor::Copy() {
 void Editor::Cut() {
 
     // saving the character from start position to end position in a seperate array
-    int size = 5;
+    int size = rows_[cursor_y_].GetBufferSize();
     copied_text_ = new char[size];
-    int index = 0;
-    for (int i = cursor_x_; i < cursor_x_+size; i++) {
-        copied_text_[index] = rows_[cursor_y_].GetBuffer()[i];
-        index++;
-    }
-    cursor_x_ = cursor_x_ + size;
-    for (int i = 5; i > 0; i--) {
-        DeleteChar();
+    for (int i = 0; i < size; i++) {
+        copied_text_[i] = rows_[cursor_y_].GetBuffer()[i];
     }
     copied_text_size_ = size;
+
+    DeleteRow(cursor_y_);
+    cursor_x_ = 0;
 }
 
 void Editor::Paste() {
