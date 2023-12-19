@@ -1,6 +1,7 @@
 // this is a test    
 #include "src/editor.cc"
  
+// this is a comment 
 Editor editor;
  
 // Changes the state of the terminal its initial state 
