@@ -2,9 +2,10 @@
 #include <string.h>
 #include <iostream>
 
-#include "gap_buffer.h"
+#include "../include/gap_buffer.h"
 
-enum highlight {
+enum highlight
+{
     HL_NORMAL = 0,
     HL_COMMENT,
     HL_KEYWORD,
@@ -15,112 +16,143 @@ enum highlight {
 };
 
 // Constructor
-GapBuffer::GapBuffer() {
+GapBuffer::GapBuffer()
+{
     buffer_size_ = 5;
     gap_size_ = 5;
     gap_buffer_ = new char[buffer_size_];
 
-    for(int i = 0; i < buffer_size_; i++) {
+    for (int i = 0; i < buffer_size_; i++)
+    {
         gap_buffer_[i] = ' ';
     }
     gap_left_ = 0;
     gap_right_ = gap_size_ - gap_left_ - 1;
     text_length_ = 0;
-    text_buffer_ = new char[text_length_];
-} 
+    text_buffer_ = nullptr;
+}
 
 // Destructor
-GapBuffer::~GapBuffer() {
+GapBuffer::~GapBuffer()
+{
     delete[] gap_buffer_;
-    gap_buffer_ = NULL;
+    gap_buffer_ = nullptr;
 
     delete[] text_buffer_;
-    text_buffer_ = NULL;
+    text_buffer_ = nullptr;
 }
 
 // Getters
-char *GapBuffer::GetBuffer() {
+char *GapBuffer::GetBuffer()
+{
     return gap_buffer_;
 }
 
-char *GapBuffer::GetTextBuffer() {
-    for (int i = 0; i < gap_left_; i++) {
-        text_buffer_[i] = gap_buffer_[i];
-    }
-    for (int i = gap_right_; i < buffer_size_; i++) {
-        text_buffer_[i - gap_size_] = gap_buffer_[i];
-    }
+char *GapBuffer::GetTextBuffer()
+{
+    // for (int i = 0; i < gap_left_; i++)
+    // {
+    //     text_buffer_[i] = gap_buffer_[i];
+    // }
+    // for (int i = gap_right_; i < buffer_size_; i++)
+    // {
+    //     text_buffer_[i - gap_size_] = gap_buffer_[i];
+    // }
 
-    return text_buffer_;
+    // return text_buffer_;
+
+    char *visible_text = new char[text_length_ + 1];
+    memcpy(visible_text, text_buffer_, text_length_);
+    visible_text[text_length_] = '\0';
+    return visible_text;
 }
 
-int GapBuffer::GetGapLeft() {
+int GapBuffer::GetGapLeft()
+{
     return gap_left_;
 }
 
-int GapBuffer::GetGapRight() {
+int GapBuffer::GetGapRight()
+{
     return gap_right_;
 }
 
-int GapBuffer::GetGapSize() {
+int GapBuffer::GetGapSize()
+{
     return gap_size_;
 }
 
-int GapBuffer::GetBufferSize() {
+int GapBuffer::GetBufferSize()
+{
     return buffer_size_;
 }
 
-int GapBuffer::GetTextLength() {
+int GapBuffer::GetTextLength()
+{
     return text_length_;
 }
 
-char *GapBuffer::GetCopiedText() {
+char *GapBuffer::GetCopiedText()
+{
     return copied_text;
 }
 
-int GapBuffer::GetCopiedSize() {
+int GapBuffer::GetCopiedSize()
+{
     return copied_char_size;
 }
 
-unsigned char *GapBuffer::GetHighlight() {
+unsigned char *GapBuffer::GetHighlight()
+{
     return highlight_;
 }
 
 // Setters
-void GapBuffer::SetBuffer(char *new_buffer) {
+void GapBuffer::SetBuffer(char *new_buffer)
+{
     gap_buffer_ = new_buffer;
 }
 
-void GapBuffer::SetTextBuffer(char *new_text) {
+void GapBuffer::SetTextBuffer(char *new_text)
+{
     text_buffer_ = new_text;
 }
 
-void GapBuffer::SetGapLeft(int new_gap_left) {
+void GapBuffer::SetGapLeft(int new_gap_left)
+{
     gap_left_ = new_gap_left;
 }
 
-void GapBuffer::SetGapRight(int new_gap_right) {
+void GapBuffer::SetGapRight(int new_gap_right)
+{
     gap_right_ = new_gap_right;
 }
 
-void GapBuffer::SetGapSize(int new_gap_size) {
+void GapBuffer::SetGapSize(int new_gap_size)
+{
     gap_size_ = new_gap_size;
 }
 
-void GapBuffer::SetBufferSize(int new_buffer_size) {
+void GapBuffer::SetBufferSize(int new_buffer_size)
+{
     buffer_size_ = new_buffer_size;
 }
 
-void GapBuffer::SetTextLength(int new_text_length) {
+void GapBuffer::SetTextLength(int new_text_length)
+{
     text_length_ = new_text_length;
 }
 
-void GapBuffer::SetHighlight(unsigned char *new_hl) {
+void GapBuffer::SetHighlight(unsigned char *new_hl)
+{
     highlight_ = new_hl;
 }
 
-void GapBuffer::InsertLine(char *input, size_t length) {
+void GapBuffer::InsertLine(char *input, size_t length)
+{
     // allocate enough memory for the input
+    delete gap_buffer_;
+
     gap_buffer_ = new char[length];
 
     // copy the input in the buffer
@@ -132,52 +164,59 @@ void GapBuffer::InsertLine(char *input, size_t length) {
     gap_left_ = length;
     gap_right_ = length;
     gap_size_ = 0;
-    //gap_buffer_[length] = ' ';
+    // gap_buffer_[length] = ' ';
 
     text_buffer_ = gap_buffer_;
 }
 
 // Display buffer content
-void GapBuffer::display() {
-    for(int i = 0; i < buffer_size_; i++) {
+void GapBuffer::display()
+{
+    for (int i = 0; i < buffer_size_; i++)
+    {
         std::cout << gap_buffer_[i];
     }
     std::cout << std::endl;
 }
 
-//resize gap when its empty
-void GapBuffer::growGap(int position) {
+// resize gap when its empty
+void GapBuffer::growGap(int position)
+{
     char *temp_buffer = new char[buffer_size_];
-    std::copy(gap_buffer_, gap_buffer_+buffer_size_, temp_buffer);
+    std::copy(gap_buffer_, gap_buffer_ + buffer_size_, temp_buffer);
 
-    gap_buffer_ = (char*) realloc(gap_buffer_, buffer_size_+5);
+    gap_buffer_ = (char *)realloc(gap_buffer_, buffer_size_ + 5);
 
     // copy characters of buffer to temp_buffer[]
 
-    for (int i = 0; i < position; i++) {
+    for (int i = 0; i < position; i++)
+    {
         gap_buffer_[i] = temp_buffer[i];
     }
 
-    for (int i = position; i < position + 5; i++) {
+    for (int i = position; i < position + 5; i++)
+    {
         gap_buffer_[i] = ' ';
     }
 
-    for (int i = position; i < buffer_size_; i++) {
-        gap_buffer_[i+5] = temp_buffer[i];
+    for (int i = position; i < buffer_size_; i++)
+    {
+        gap_buffer_[i + 5] = temp_buffer[i];
     }
 
     delete[] temp_buffer;
-    temp_buffer = NULL;
-    
+    temp_buffer = nullptr;
+
     buffer_size_ += 5;
     gap_right_ += 5;
     gap_size_ = 5;
-
 }
 
 // move the gap left in the buffer
-void GapBuffer::left(int position) {
-    while (position < gap_left_) {
+void GapBuffer::left(int position)
+{
+    while (position < gap_left_)
+    {
         gap_left_--;
         gap_right_--;
         gap_buffer_[gap_right_ + 1] = gap_buffer_[gap_left_];
@@ -186,7 +225,8 @@ void GapBuffer::left(int position) {
 }
 
 // move gap right in the buffer
-void GapBuffer::right(int position) {
+void GapBuffer::right(int position)
+{
     while (position > gap_left_)
     {
         gap_left_++;
@@ -211,22 +251,23 @@ void GapBuffer::move_gap(int position)
     }
 }
 
-
-
 // insert char in the buffer at position
-void GapBuffer::insert(char input, int position) {
-    //std::cout << "position: " << position << std::endl;
-    if (position != gap_left_) {
-        //std::cout << "postition != gap_left" << std::endl;
+void GapBuffer::insert(char input, int position)
+{
+    // std::cout << "position: " << position << std::endl;
+    if (position != gap_left_)
+    {
+        // std::cout << "postition != gap_left" << std::endl;
         move_gap(position);
     }
 
     // Insert characters one by one
 
     // If the gap is empty grow the size
-    if (gap_right_ <= gap_left_) {
-        //std::cout << "grow gap " << std::endl;
-        //int k = gap_size_;
+    if (gap_right_ <= gap_left_)
+    {
+        // std::cout << "grow gap " << std::endl;
+        // int k = gap_size_;
         growGap(position);
     }
 
@@ -239,14 +280,17 @@ void GapBuffer::insert(char input, int position) {
 }
 
 // get the total count of the buffer data
-int GapBuffer::count() {
+int GapBuffer::count()
+{
     return text_length_;
 }
 
 // deleter char in the buffer at position
-void GapBuffer::deleteChar(int position){
+void GapBuffer::deleteChar(int position)
+{
     // if position is not the gap then check and move the cursor to that point
-    if (position + 1 != gap_left_) {
+    if (position + 1 != gap_left_)
+    {
         move_gap(position + 1);
     }
 
@@ -257,12 +301,13 @@ void GapBuffer::deleteChar(int position){
     text_length_--;
 }
 
-
-void GapBuffer::ReallocateBufferMemory(char *buffer, size_t size) {
-    gap_buffer_ = (char*) realloc(buffer, size);
+void GapBuffer::ReallocateBufferMemory(char *buffer, size_t size)
+{
+    gap_buffer_ = (char *)realloc(buffer, size);
 }
 
-void GapBuffer::EmptyBuffer() {
+void GapBuffer::EmptyBuffer()
+{
     delete[] gap_buffer_;
     gap_buffer_ = nullptr;
     gap_left_ = 0;
@@ -277,10 +322,12 @@ void GapBuffer::EmptyBuffer() {
     highlight_ = nullptr;
 }
 
-void GapBuffer::ReallocateHLMemory(unsigned char *hl, size_t size) {
-    highlight_ = (unsigned char*) realloc(hl, size);
+void GapBuffer::ReallocateHLMemory(unsigned char *hl, size_t size)
+{
+    highlight_ = (unsigned char *)realloc(hl, size);
 }
 
-void GapBuffer::SetHighlightAtIndex(int index, int value) {
+void GapBuffer::SetHighlightAtIndex(int index, int value)
+{
     highlight_[index] = value;
 }
